@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>👻 로그인 성공 | TRICK OR TREAT</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Pretendard", "Noto Sans KR", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #706657, #706657);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;        /* ✅ 브라우저 화면 높이 꽉 채움 */
+      overflow: hidden;     /* ✅ 스크롤 없애기 */
+      color: #333;
+    }
+
+
+    header {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 15px 25px;
+    }
+
+    /* ✅ fake_ghost와 동일한 버튼 스타일 */
+    .btn {
+      background: #2c2a2a;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      padding: 8px 14px;
+      font-size: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #e55d00;
+    }
+
+    h1 {
+      margin-top: 150px;
+      font-size: 36px;
+      color: #f6f0e4;
+      letter-spacing: 2px;
+      text-align: center;
+    }
+
+    .username {
+      font-size: 16px;
+      color: #f6f0e4;
+      margin-top: 30px;
+      margin-bottom: 30px;
+      text-align: center;
+      font-weight: 400;
+    }
+
+    .ghost {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .ghost img {
+      width: 500px;
+      max-width: 300%;
+      border-radius: 20px;
+    }
+
+    .product {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .info {
+      margin-top: 350px;
+      text-align: center;
+      color: #c0bbb9;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 15px;
+      text-align: center;
+      font-size: 14px;
+      color: #cccccc;
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 28px;
+      }
+      .ghost img,
+      .product img {
+        width: 180px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ✅ fake_ghost와 동일한 header -->
+  <header>
+    <button class="btn" onclick="logout()">로그아웃</button>
+  </header>
+
+  <!-- ✅ 로그인한 회원 이름 표시 -->
+  <div class="username" id="username">회원님 환영합니다</div>
+
+  <h1>👻</h1>
+  <p>유령 코드를 입력하세요.</p>
+
+  <div class="ghost">
+    <input type="text" id="ghost-code" placeholder="예: A12354" style="padding:10px; border-radius:8px; border:none; text-align:center;" />
+    <br />
+    <button class="btn" style="margin-top:15px; background:#44413f; font-size:12px;" onclick="submitCode()">확인</button>
+    <p id="message" style="color:#e2dcd5; margin-top:10px; text-align:center;"></p>
+  </div>
+
+  <footer>© 2025 랜딩 문화기획국. All rights reserved.</footer>
+
+  <script>
+    // ✅ URL에서 이름 가져오기
+    const params = new URLSearchParams(window.location.search);
+    const userName = params.get("name");
+
+    if (userName) {
+      document.getElementById("username").textContent = `${userName}님, 환영합니다 👋`;
+    }
+
+    async function submitCode() {
+      const code = document.getElementById("ghost-code").value.trim();
+      const res = await fetch("/check_code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code })
+      });
+      const data = await res.json();
+      if (data.success) {
+        window.location.href = data.page;
+      } else {
+        document.getElementById("message").textContent = data.message;
+      }
+    }
+
+    function logout() {
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

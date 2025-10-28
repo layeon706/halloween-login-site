@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TRICK OR TREAT 로그인</title>
+  <style>
+    body {
+      font-family: "Pretendard", "Noto Sans KR", sans-serif;
+      background: linear-gradient(135deg, #978d7c, #978d7c);
+      display: flex;
+      flex-direction: column; /* ✅ 세로 배치 */
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    /* ✅ 로그인창 위쪽 안내문 */
+    .intro-info {
+      margin-bottom: 20px;
+      text-align: center;
+      color: #121212;
+      border-radius: 12px;
+      padding: 10px 25px;
+      font-size: 13px;
+      line-height: 1.7;
+      backdrop-filter: blur(2px);
+      font-weight: 500;
+    }
+
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      width: 250px;
+      text-align: center;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.0);
+    }
+
+    input, button {
+      width: 70%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+      outline: none;
+    }
+
+    button {
+      background: #2f2e2d;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #44413f;
+    }
+
+    .event-info {
+      margin-top: 50px; /* ✅ 로그인 박스 밑 간격 */
+      text-align: center;
+      color: #fff;
+      border-radius: 12px;
+      padding: 15px 25px;
+      font-size: 12px;
+      line-height: 1.7;
+      backdrop-filter: blur(2px);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ✅ 안내문을 로그인창 위로 이동 -->
+  <div class="intro-info">
+    자율전공학부에 유령이 출몰했습니다!<br>
+    유령을 잡으시면 보상이 주어집니다 🎃
+  </div>
+
+  <div class="login-box">
+    <h2>TRICK OR TREAT</h2>
+    <input id="name" placeholder="이름">
+    <input id="student-id" placeholder="학번" type="password">
+    <button onclick="login()">로그인</button>
+    <p id="msg" style="color:rgb(168, 17, 17);"></p>
+  </div>
+
+  <div class="event-info">
+    이벤트 기간 : 2025.10.30 ~ 31 / 12:00 ~ 20:00<br>
+    유령출몰 장소 : 구한의대 211, 212, 218호<br>
+    상품 수령기간 : 10.30~31 / 12:00 ~ 20:00<br>
+    상품 수령장소 : 구한의대 217호 학생회실
+  </div>
+
+  <script>
+    async function login() {
+      const name = document.getElementById("name").value.trim();
+      const id = document.getElementById("student-id").value.trim();
+      const msg = document.getElementById("msg");
+      msg.textContent = "";
+
+      const res = await fetch("/login", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({name: name, student_id: id})
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        // ✅ 여기를 고쳤습니다! 백틱(`)으로 감싸야 변수로 인식됩니다.
+        window.location.href = `login_success.html?name=${encodeURIComponent(name)}`;
+      } else {
+        msg.textContent = data.message;
+      }
+    }
+  </script>
+</body>
+</html>

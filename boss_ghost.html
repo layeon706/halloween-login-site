@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎉 축하합니다! | TRICK OR TREAT</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Pretendard", "Noto Sans KR", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh; /* ✅ 화면 꽉 차게 */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, #706657, #706657);
+      color: #333;
+      overflow: hidden; /* ✅ 스크롤 제거 */
+    }
+
+    header {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 15px 25px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      background: #2c2a2a;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      padding: 8px 14px;
+      font-size: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #e55d00;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 36px;
+      color: #f6f0e4;
+      letter-spacing: 2px;
+      margin: 0 0 10px;
+    }
+
+    .ghost img {
+      width: 300px;
+      max-width: 90%;
+      border-radius: 20px;
+      margin-top: 10px;
+    }
+
+    .result {
+      margin-top: 10px;
+      color: #decfc9;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .info {
+      text-align: center;
+      color: #decfc9;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    footer {
+      width: 100%;
+      padding: 10px 0;
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 26px;
+      }
+      .ghost img {
+        width: 200px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <button class="btn" onclick="logout()">로그아웃</button>
+  </header>
+
+  <main>
+    <h1>특급유령 포획 성공!</h1>
+
+    <div class="ghost">
+      <!-- ✅ 특급유령 이미지 -->
+      <img src="/static/images/KakaoTalk_20251011_185820682_01.png" alt="특급유령 이미지">
+    </div>
+
+    <div class="result"><strong>
+    </p>1만원 상품권을 획득하였습니다</p>
+    </p>(cj/배민) 선택</p></strong></div>
+
+    <div class="info">
+      <p>상품 수령 기간 : 10.30 ~ 10.31 / 12:00 ~ 20:00</p>
+      <p>수령 장소 : 구한의대 217호 학생회실</p>
+    </div>
+  </main>
+
+  <footer>© 2025 랜딩 문화기획국. All rights reserved.</footer>
+
+  <script>
+    function logout() {
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>
