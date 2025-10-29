@@ -112,7 +112,6 @@ def login():
 # === 코드 확인 ===
 @app.route('/check_code', methods=['POST'])
 def check_code():
-    # 로그인 정보 확인
     if 'student_id' not in session:
         return jsonify({"success": False, "message": "로그인 정보가 없습니다. 다시 로그인 해주세요."})
 
@@ -125,7 +124,6 @@ def check_code():
     data = request.get_json(force=True)
     code = data.get('code', '').strip()
 
-    # codes.xlsx 읽기
     wb = load_workbook(CODE_FILE, data_only=True)
     ws = wb.active
 
@@ -144,13 +142,11 @@ def check_code():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
-    # fake_ghost는 무제한 허용
     if matched_page == "fake_ghost.html":
         print(f"😈 {name} ({sid}) fake_ghost 입력 - 제한 없음")
         conn.close()
         return jsonify({"success": True, "page": matched_page})
 
-    # === 이미 다른 사람이 가져간 코드인지 확인 ===
     cur.execute("SELECT student_id, name FROM used_codes WHERE code=?", (code,))
     already = cur.fetchone()
     if already and already[0] != sid:
@@ -158,7 +154,6 @@ def check_code():
         conn.close()
         return jsonify({"success": False, "message": "이미 가져간 코드입니다."})
 
-    # === 현재 학생의 전체 시도 횟수 확인 ===
     cur.execute("SELECT COUNT(*) FROM attempts WHERE student_id=?", (sid,))
     count = cur.fetchone()[0]
 
@@ -167,10 +162,7 @@ def check_code():
         conn.close()
         return jsonify({"success": False, "message": "최대 3회까지만 입력할 수 있습니다."})
 
-    # === 코드 시도 기록 저장 ===
     cur.execute("INSERT INTO attempts (student_id, code) VALUES (?, ?)", (sid, code))
-
-    # === 코드 사용 테이블에도 기록 (아직 없을 경우만) ===
     cur.execute("INSERT OR IGNORE INTO used_codes (code, student_id, name) VALUES (?, ?, ?)", (code, sid, name))
 
     conn.commit()
@@ -237,8 +229,6 @@ def delete_code():
         print(f"⚠️ 관리자: 코드 {code} 삭제 실패 (존재하지 않음)")
         return jsonify({"success": False, "message": "존재하지 않는 코드입니다."})
 
-
-
 # === 라우트 ===
 @app.route('/')
 def root():
@@ -255,9 +245,12 @@ def serve_any(filename):
     else:
         return f"⚠️ 파일을 찾을 수 없습니다: {filename}", 404
 
-# === 실행 ===
+# === 실행 (Render 호환) ===
 if __name__ == '__main__':
     ensure_db()
     update_database_from_excel()
     threading.Thread(target=start_watch, daemon=True).start()
-    app.run(debug=True, port=5000)
+
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
+
