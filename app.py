@@ -26,14 +26,12 @@ def ensure_db():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
-    # 회원 명단
     cur.execute('''CREATE TABLE IF NOT EXISTS members (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         student_id TEXT NOT NULL UNIQUE
     )''')
 
-    # 코드 입력 시도 기록
     cur.execute('''CREATE TABLE IF NOT EXISTS attempts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         student_id TEXT NOT NULL,
@@ -41,7 +39,6 @@ def ensure_db():
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
     )''')
 
-    # 코드 사용 현황 (누가 가져갔는지)
     cur.execute('''CREATE TABLE IF NOT EXISTS used_codes (
         code TEXT PRIMARY KEY,
         student_id TEXT NOT NULL,
@@ -185,6 +182,23 @@ def admin_data():
     cur.execute("SELECT code, student_id, name, timestamp FROM used_codes ORDER BY timestamp DESC")
     used = [{"code": r[0], "student_id": r[1], "name": r[2], "timestamp": r[3]} for r in cur.fetchall()]
     conn.close()
+
+    # ✅ 상품명 자동 매칭 추가
+    product_map = {
+        "boss_ghost.html": "상품권",
+        "baby_ghost.html": "간식",
+        "photo_ghost.html": "사진"
+    }
+
+    # codes.xlsx에서 페이지 불러와 매칭
+    if os.path.exists(CODE_FILE):
+        wb = load_workbook(CODE_FILE, data_only=True)
+        ws = wb.active
+        code_to_page = {str(ws.cell(r, 1).value).strip(): str(ws.cell(r, 2).value).strip() for r in range(2, ws.max_row + 1)}
+        for u in used:
+            page = code_to_page.get(u["code"])
+            u["product"] = product_map.get(page, "-")
+
     return jsonify({"attempts": attempts, "used_codes": used})
 
 @app.route('/reset_attempts', methods=['POST'])
@@ -253,4 +267,3 @@ if __name__ == '__main__':
 
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-

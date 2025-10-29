@@ -21,6 +21,7 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 15px;
+      background: #ffffff;
     }
 
     th, td {
@@ -35,7 +36,11 @@
     }
 
     tr:nth-child(even) {
-      background: #373434;
+      background: #fdf9f5;
+    }
+
+    tr:nth-child(odd) {
+      background: #ffffff;
     }
 
     button {
@@ -65,7 +70,7 @@
     input {
       padding: 6px 10px;
       border-radius: 5px;
-      border: none;
+      border: 1px solid #aaa;
       outline: none;
     }
   </style>
@@ -117,13 +122,6 @@
       renderTables(data);
     }
 
-    function getPrizeName(code) {
-      if (code.includes("boss_ghost.html")) return "상품권";
-      if (code.includes("baby_ghost.html")) return "간식";
-      if (code.includes("photo_ghost.html")) return "사진";
-      return "-";
-    }
-
     function renderTables(data) {
       const usedTable = document.querySelector("#usedCodesTable tbody");
       const attemptsTable = document.querySelector("#attemptsTable tbody");
@@ -131,7 +129,7 @@
       usedTable.innerHTML = data.used_codes.map(r => `
         <tr>
           <td>${r.code}</td>
-          <td>${getPrizeName(r.code)}</td>
+          <td>${r.product || "-"}</td>
           <td>${r.name}</td>
           <td>${r.student_id}</td>
           <td>${r.timestamp}</td>
